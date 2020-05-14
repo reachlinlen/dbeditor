@@ -12,6 +12,7 @@ import {
   Tooltip,
   Fab,
   Grid,
+  Button,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
@@ -21,7 +22,7 @@ import Pagination from './Pagination';
 import AddRow from './AddRow';
 
 import getTableData from './api';
-import { sortData } from './sort';
+import { sortData } from './utility';
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -85,6 +86,19 @@ function ShowTable(props) {
     }
   };
 
+  const handleDownload = () => {
+    // downloadTable(tableName.toLowercase());
+    async function downloadTable(tblName) {
+      const res = await getTableData(`${tblName}/all`, 'get');
+      var data = new Blob([res], { type: 'xlsx' });
+      var xlsxURL = window.URL.createObjectURL(data);
+      let tempLink = document.createElement('a');
+      tempLink.href = xlsxURL;
+      tempLink.setAttribute('download', `${tblName}.xlsx`);
+    }
+    downloadTable(tableName.toLowerCase());
+  };
+
   return (
     <Fragment>
       <Grid item sm={12}>
@@ -127,6 +141,11 @@ function ShowTable(props) {
       <Grid item sm={12} className={classes.pageItems}>
         <AddRow colList={colList} />
         {tblData && <Pagination startRow={1} lastRow={5} />}
+        {tblData && (
+          <Button color='primary' variant='contained' onClick={handleDownload}>
+            Download Full Table
+          </Button>
+        )}
       </Grid>
     </Fragment>
   );
