@@ -90,11 +90,13 @@ function ShowTable(props) {
     // downloadTable(tableName.toLowercase());
     async function downloadTable(tblName) {
       const res = await getTableData(`${tblName}/all`, 'get');
-      var data = new Blob([res], { type: 'xlsx' });
-      var xlsxURL = window.URL.createObjectURL(data);
-      let tempLink = document.createElement('a');
-      tempLink.href = xlsxURL;
-      tempLink.setAttribute('download', `${tblName}.xlsx`);
+      console.log('Got the file');
+      const data = new Blob([res], { type: 'text/html' });
+      const element = document.createElement('a');
+      element.href = window.URL.createObjectURL(data);
+      element.download = `${tblName}.txt`;
+      document.body.appendChild(element);
+      element.click();
     }
     downloadTable(tableName.toLowerCase());
   };
